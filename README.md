@@ -1,10 +1,5 @@
 # CookedChickenNuggets-HackEd2026
 
-## React Native
-UI can be shown through localhost. 
-Download npm and node.js and then on the 'cooked-app' root run npm run dev to see the frontend working
-
-
 ##To make it work you have to open 2 terminal at the same time.
 Terminal 1 (backend):
 
