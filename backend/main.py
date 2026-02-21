@@ -18,6 +18,16 @@ Mode = Literal["SOCRATIC", "HINT", "FINAL", "REFLECTION", "SUMMARY"]
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 def home():
     return {"message": "COOKED backend running 🍗🧠"}
@@ -78,10 +88,9 @@ def reflection_fallback() -> str:
 def chat(req: ChatRequest):
     s: Session = store.get(req.session_id)
 
-    # set task type once per session
-    if s.task_type is None:
-        s.task_type = detect_task_type(req.user_text)
-    task_type = s.task_type
+    # N/A set task type once per session
+    task_type = detect_task_type(req.user_text)
+    s.task_type = task_type  # keep latest for display if you want
 
     # update question history
     s.question_history.append(req.user_text)
@@ -122,7 +131,7 @@ def chat(req: ChatRequest):
     if effective_mode == "SOCRATIC":
         assistant_text = ask_gemini(socratic_prompt(task_type), req.user_text)
         if assistant_text is None:
-            assistant_text = final_locked_msg() if locked else socratic_fallback(task_type)
+            assistant_text = f"(FALLBACK) task={task_type} locked={locked}"
 
     elif effective_mode == "HINT":
         assistant_text = ask_gemini(hint_prompt(task_type), req.user_text)
@@ -164,3 +173,9 @@ def chat(req: ChatRequest):
         banner=banner_from_state(state, s.final_unlocked),
         summary=summary_payload
     )
+
+@app.get("/llm_test")
+def llm_test():
+    from llm_client import ask_gemini
+    out = ask_gemini("Say 'pong' only.", "ping")
+    return {"ok": out is not None, "out": out}

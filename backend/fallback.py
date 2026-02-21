@@ -6,6 +6,17 @@ def socratic_fallback(task_type: str) -> str:
         return "Before I write anything: what’s your thesis in ONE sentence? Then give one example you’ll use."
     return "Which part is confusing: definition, steps, or example? Try explaining it in your own words first."
 
+def socratic_fallback(task_type: str, user_text: str = "") -> str:
+    t = (user_text or "").strip().lower()
+    if len(t) < 4 or t in ["hi", "hey", "hello", "???", "ok", "hmm"]:
+        return "Ask me something you’re learning (math, writing, or a concept) — and show what you’ve tried so far."
+
+    if task_type == "math":
+        return "What method fits (substitution, parts, simplification)? Write Step 1."
+    if task_type == "writing":
+        return "What’s your thesis in ONE sentence? Then one example you’ll use."
+    return "What exactly do you want: a definition, steps, or an example? Write one sentence with your goal."
+
 def hint_fallback(task_type: str) -> str:
     if task_type == "math":
         return "Hint: look for a pattern where a derivative is ‘nearby’. If it’s a product like x·e^x, think integration by parts."

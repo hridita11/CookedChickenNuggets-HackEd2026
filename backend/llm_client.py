@@ -1,41 +1,42 @@
+# backend/llm_client.py
 import os
+from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv()
+
 API_KEY = os.getenv("GEMINI_API_KEY")
 
 try:
     from google import genai
 except Exception as e:
     genai = None
-    print("Could not import google.genai:", e)
+    print("IMPORT ERROR:", repr(e))
 
 _client = None
 if API_KEY and genai:
-    _client = genai.Client(api_key=API_KEY)
+    try:
+        _client = genai.Client(api_key=API_KEY)
+    except Exception as e:
+        print("CLIENT INIT ERROR:", repr(e))
 
-def ask_gemini(system_prompt: str, user_prompt: str) -> str | None:
-    if _client is None:
+def ask_gemini(system_prompt: str, user_prompt: str) -> Optional[str]:
+    if not _client:
+        print("LLM not initialized")
         return None
-    
-    candidates = [
-        "models/gemini-2.5-flash",
-        "models/gemini-2.5-pro",
-        "models/gemini-2.0-flash",
-        "models/gemini-pro-latest",
-    ]
 
-    for model_name in candidates:
-        try:
-            resp = _client.models.generate_content(
-                model=model_name,
-                contents=f"{system_prompt}\n\nUser: {user_prompt}"
-            )
-            text = getattr(resp, "text", None)
-            if text:
-                return text
-        except Exception as e:
-            # Try next model
-            continue
+    try:
+        response = _client.models.generate_content(
+            model="gemini-2.5-flash",  # ✅ working current model
+            contents=f"{system_prompt}\n\nUser: {user_prompt}"
+        )
 
-    return None
+        if response.text:
+            return response.text.strip()
+
+        print("No text returned:", response)
+        return None
+
+    except Exception as e:
+        print("GEMINI CALL FAILED:", repr(e))
+        return None
