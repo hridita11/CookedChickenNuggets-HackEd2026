@@ -1,5 +1,5 @@
 # app/tests_metrics.py
-from .metrics import EffortMetrics, compute_effort_score, skill_tags, reliance_index, generate_summary
+from metrics import EffortMetrics, compute_effort_score, skill_tags, reliance_index, generate_summary
 
 def simulate():
     cases = {
