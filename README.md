@@ -1,1 +1,1 @@
-# ChickenNuggets-HackEd2026
+# CookedChickenNuggets-HackEd2026
