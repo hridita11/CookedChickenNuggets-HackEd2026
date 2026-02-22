@@ -108,12 +108,13 @@ function App() {
     }
   };
 
+
   return (
     <div style={{ padding: "20px" }}>
       <Header />
 
       {/* ✅ YOUR WORK VISIBLE HERE */}
-      <div style={{ margin: "12px 0", padding: "10px", border: "1px solid #444" }}>
+      <div style={{ margin: "12px 0", padding: "10px", border: "3px solid #ffffff55" }}>
         <div><strong>Banner:</strong> {lastResult?.banner ?? "—"}</div>
         <div><strong>Score:</strong> {lastResult?.score ?? 0} / 100</div>
         <div>
@@ -123,7 +124,7 @@ function App() {
         <div><strong>Reasons:</strong> {lastResult?.reasons ? lastResult.reasons.join(" • ") : "—"}</div>
       </div>
 
-      <div style={{ minHeight: "300px", border: "1px solid #ccc", padding: "10px" }}>
+      <div class="chat-container" style={{ minHeight: "300px", border: "5px solid #e4d3bb", padding: "10px" }}>
         {messages.map((msg, index) => (
           <p key={index}>
             <strong>{msg.role}:</strong> {msg.content}
@@ -134,8 +135,9 @@ function App() {
       {/* Meter now uses backend-driven mode */}
       <Meter mode={mode} score={lastResult?.score ?? 0} />
 
-      <input value={input} onChange={onChangeInput} />
+      <input style={{color:"#96541e", background:"white"}}value={input} onChange={onChangeInput} />
       <button onClick={sendMessage}>Send</button>
+
     </div>
   );
 }
